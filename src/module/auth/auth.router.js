@@ -5,11 +5,12 @@ import * as validators from './auth.validation.js'
 import { Router } from 'express'
 const router = new Router()
 
-  router.post('/signup',validation(validators.signupSchema),asyncHandler(authController.signup)) ;
-  router.post('/signin',validation(validators.signinSchema),asyncHandler(authController.signin))
-  // test email on browser using GET method
+  router.post('/signup', asyncHandler(authController.signup)) ;
+  router.post('/signin', asyncHandler(authController.signin))
+   
   // router.get('/confairmEmail/:email'  ,asyncHandler(authController.confairmEmail))
   router.get('/confairmEmail/:token'  ,asyncHandler(authController.confairmEmail))
+  router.get('/NewconfairmEmail/:token'  ,asyncHandler(authController.newConfairmEmail))
  
 
 

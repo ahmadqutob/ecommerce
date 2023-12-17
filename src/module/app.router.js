@@ -2,6 +2,8 @@ import connectDB from "../../DB/connectDB.js"
  import authRouter from "./auth/auth.router.js"
 import userRouter from "./user/user.router.js"
 import catRouter from './category/category.router.js'
+import couponRouter from './coupon/coupon.router.js'
+import brandRouter from './brand/brand.router.js'
  import path from "path";
 import { fileURLToPath } from "url";
 const myLocation =path.dirname(fileURLToPath(import.meta.url))
@@ -14,6 +16,8 @@ const initapp = (app,express,next)=>{
  app.use('/auth',authRouter)
  app.use('/user',userRouter)
  app.use('/categorys',catRouter)
+ app.use('/coupon',couponRouter)
+ app.use('/brand',brandRouter)
  //  let nodejs go to static folder  not like a function , and get the image
 app.use('/upload',express.static('uploads'))
 
