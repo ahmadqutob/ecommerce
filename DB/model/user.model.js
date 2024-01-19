@@ -10,8 +10,9 @@ import mongoose from "mongoose";
     phone:{type:String},
     role:{type:String,enum:['admin', 'user','hr'],default:'user'},
     status:{type:String,enum:['active', 'notActive' ],default:'active'}, // block user or not
-    gender:{type:String,enum:['male', 'female' ] }, 
-    gender:{type:String }, 
+    gender:{type:String,enum:['male', 'female' ] },
+    forgotPassword:{type:String,default:null}, 
+    // gender:{type:String }, 
      
  
     // profilePic:{type:String,required:false},

@@ -8,7 +8,7 @@ export const  getCategories= joi.object({
 
 export const categoryValidation = joi.object({
     name: joi.string().min(5).max(20),
-    categoryId:generalFeild.id.required(),
+    // categoryId:generalFeild.id.required(),
     file: generalFeild.file.required(),
   })
   .required();

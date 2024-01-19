@@ -1,12 +1,13 @@
-import { hash } from "bcrypt";
-import userModel from "../../../../DB/model/user.model.js";
-import { compare } from "../../../services/hashAndCompare.js";
+ import userModel from "../../../../DB/model/user.model.js";
+import { compare, hash } from "../../../services/hashAndCompare.js";
 import { generateToken, verifyToken } from "../../../services/generateAndVeryfyToken.js";
 import jwt from 'jsonwebtoken'
 import { sendEmail } from "../../../services/sendEmail.js";
 import { asyncHandler } from "../../../services/errorHandler.js";
+import { customAlphabet } from "nanoid";
+import { blackListTokens } from "../../../services/blackListToken.js";
 
-export const signup =  async(req,res,next)=>{
+export const signup =asyncHandler(  async(req,res,next)=>{
 const {username,email,password} = req.body;
 const user = await userModel.findOne({email});
 if(user){
@@ -214,25 +215,27 @@ const newlink =`${req.protocol}://${req.headers.host}/auth/NewconfairmEmail/${to
  const newUser = await userModel.create({email,username,password:hashPassword});
  
 return  res.status(201).json({message: 'success',newUser}) 
-} 
+} )
 
 
-    export const confairmEmail=  async(req,res)=>{
+       export const confairmEmail=asyncHandler(  async(req,res)=>{
         const {token} = req.params
-        
-        
-           const decoded =await jwt.verify(token,process.env.CONFAIRM_SEGNATURE)
-         
-
-            //   return res.json({message:decoded})
+     
+         const decoded =await jwt.verify(token,process.env.CONFAIRM_SEGNATURE)
+       if(!decoded?.email){
+        return next(Error('Invalid token'))
+      }
 
          const user = await userModel.updateOne({email:decoded.email},{confairmEmail:true})
-         
+         if(user.confairmEmail){
+             //  or link to frontend url 
+            return res.status(200).redirect(`${process.env.FE_URL}`) //login page url
+         }
         //  return res.json({message:'your email is confirmed ',user})
             // redirect user to login  
             return res.redirect('https://jwt.io/')
         
-       } 
+       } )
  
  
 
@@ -260,29 +263,24 @@ return  res.status(201).json({message: 'success',newUser})
  
 
 export const signin=async (req,res,next)=>{
-
-
+ 
 const {email,password} = req.body;
-// console.log(email,password);
-const user = await userModel.findOne({email});
+ const user = await userModel.findOne({email});
 
 if(!user){
-// return res.json({message: 'email is not exist'})
-return next(new Error('email is not exist'))
+  return next(new Error('email is not exist'))
 }
 else{
     if(!user.confairmEmail){
-        // return res.json({message:'plz verify your email'})
-        return next(new Error('plz verify your email'))
+
+      return next(new Error('plz verify your email'))
 
     } 
 }
 const match = await compare(password,user.password);
-//   console.log(user._id)
-if(password === user.password){
+ if(password === user.password){
     console.log(user._id)
-    // const token = generateToken({id:'ahmad'});
-    const token = jwt.sign({id:user._id},process.env.SEGNATURE,{expiresIn:'24h'})
+     const token = jwt.sign({id:user._id,role:user.role},process.env.SEGNATURE,{expiresIn:'24h'})
     return res.json({message: 'DONE !', token})
 }else{
     // return res.json({message: 'password is invalid'})
@@ -292,3 +290,41 @@ if(password === user.password){
 }
 
 }
+
+//  first page -> enter email to send code and save code in forgot password 
+export const sendCode= asyncHandler(async (req,res,next)=>{
+  const {email} = req.body;
+  const code = customAlphabet('123456ahmad',6);
+  const alphabetCode= code();
+  const html =` <p> this is code ${alphabetCode}</p>`;
+  await  sendEmail(email,'alphabet code ',html)
+    const user = await userModel.findOneAndUpdate({email},{forgotPassword:alphabetCode},{new:true});
+
+  return res.json({message: 'alphabet code' ,user})
+
+})
+// secound page enter email newPassword code
+export const forgotPassword= asyncHandler(async (req,res,next)=>{
+  const {code,email,password}= req.body;
+  const user = await userModel.findOne({email});
+  if(user.forgotPassword != code || !code){
+    return next(new Error('code is incorrect'));
+  }
+  if(user.email != email){
+    return next(new Error('user not found'));
+  }
+  // return res.json(user)
+  const hashPass= await hash(password,8);
+  user.password = hashPass
+  user.forgotPassword = null;
+  user.save();
+  return res.json(user)
+
+})
+
+
+export const logOut= asyncHandler(async (req,res,next)=>{
+  const {token}= req.body ; 
+  blackListTokens.push(token);
+  return res.json({message: 'token is destroyed', blackListTokens}) ;
+});

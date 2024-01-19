@@ -13,7 +13,7 @@ createdBy:{type:Types.ObjectId,ref:'User'}
     timestamps:true
 });
 categorySchema.virtual('categorySchemaa',{
-    localField:'_id',
+    localField:'_id',//link from categorySchema
     foreignField:'categoryId', // from subCategory schema
     ref:'subCategory'   // reference to subCategoryModel
 })
