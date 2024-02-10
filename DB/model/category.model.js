@@ -5,7 +5,8 @@ const categorySchema = new Schema({
 name:{type:String , required:true,unique:true},
 slug:{type:String , required:true},
 image:{type:Object , required:true},
-createdBy:{type:Types.ObjectId,ref:'User'}
+createdBy:{type:Types.ObjectId,ref:'User',required:true},
+updatedBy:{type:Types.ObjectId,ref:'User',required:true},
 
 },{
     toJSON:{virtuals:true},
@@ -13,8 +14,8 @@ createdBy:{type:Types.ObjectId,ref:'User'}
     timestamps:true
 });
 categorySchema.virtual('categorySchemaa',{
-    localField:'_id',
-    foreignField:'categoryId', // from subCategory schema
+    localField:'_id',//link from categorySchema
+    foreignField:'categoryId', // from subCategory schema 
     ref:'subCategory'   // reference to subCategoryModel
 })
 const categoryModel = mongoose.models.Category || model('Category',categorySchema);

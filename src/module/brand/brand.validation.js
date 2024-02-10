@@ -6,16 +6,16 @@ export const  getCategories= joi.object({
   myid:joi.string()
 }).required();
 
-export const categoryValidation = joi.object({
-    name: joi.string().min(5).max(20),
-    // categoryId:generalFeild.id.required(),
-    file: generalFeild.file.required(),
+export const createBrands = joi.object({
+    name: joi.string().min(5).max(20).required(),
+     file: generalFeild.file.required(),
+     categoryId:generalFeild.id
   })
   .required();
 
-export const updateCategory = joi
+export const updateBrand = joi
   .object({
-   categoryId:generalFeild.id,
+   brandId:generalFeild.id,
     // categoryId: joi.string().min(24).max(24).required(),
     name: joi.string().min(5).max(20), //not required .required(),
     file: generalFeild.file,
