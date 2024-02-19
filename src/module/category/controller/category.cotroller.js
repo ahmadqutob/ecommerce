@@ -4,7 +4,10 @@ import { asyncHandler } from "../../../services/errorHandler.js";
 import slugify from "slugify";
 
 export const getAllCategory =asyncHandler(async (req, res,next) => {
-  const category = await categoryModel.find().populate('categorySchemaa'); // using virtual populate
+  const category = await categoryModel.find().populate({
+    path:'subCategoryVirtual',
+    select:'_id name'
+  }); // using virtual populate
   return res.json({message:'success',category})
 });
 

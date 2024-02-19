@@ -3,6 +3,7 @@ import cloudinary from "../../../services/cloudinary.service.js";
 import { asyncHandler } from "../../../services/errorHandler.js";
 import subcategoryModel from '../../../../DB/model/subCategory.model.js'
 import slugify from "slugify";
+import { softDelete } from "../../product/controller/product.cotroller.js";
 
 // export const getAllCategory =asyncHandler(async (req, res,next) => {
 //   // const category = await categoryModel.find();
@@ -10,7 +11,20 @@ import slugify from "slugify";
 //   return res.json(req.params.categoryId)
 
 // });
-
+export const getProduct= asyncHandler(async (req, res, next) => {
+                    // categortId(parent) / subCategoryId(parent)
+    //  categorys/65b3b0d768d8bb12b06c03fa/65b3b0d768d8bb12b06c03fa/product
+        const {subCategoryId} =req.params;
+        const subCategory_product = await subcategoryModel.findById(subCategoryId).populate({
+            path:'vitualProduct',
+            match:{ softDelete:{$eq:false}} //condition if softDelete is false
+        });
+        // const subCategory_product = await subcategoryModel.findById(subCategoryId).populate({
+        //     path:'vitualProduct',
+        //     select:'name -subCategoryId'
+        // });
+        return res.json({message:'success',subCategory_product})
+    });
 
 export const createSubCategory = asyncHandler(async (req, res, next) => {
  
@@ -35,7 +49,7 @@ export const getSubCategory =asyncHandler(async (req, res,next) => {
 
   const subcategory = await subcategoryModel.find().populate({
     path:'categoryId',
-    select:'_id name'
+    // select:'_id'
   })
   return res.json({message:'success',subcategory})
 
@@ -48,7 +62,7 @@ export const getSubCategory =asyncHandler(async (req, res,next) => {
 
 export const getAllSubCategory =asyncHandler(async (req, res,next) => {
     
-  const subcategory = await subcategoryModel.find()
+  const subcategory = await subcategoryModel.find() 
   return res.json({message:'success',subcategory})
 });
 

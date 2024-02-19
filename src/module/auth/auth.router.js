@@ -14,7 +14,7 @@ const router = new Router()
   router.get('/NewconfairmEmail/:token'  ,asyncHandler(authController.newConfairmEmail))
  router.patch('/sendCode',validation(validators.sendCode),authController.sendCode)
  router.patch('/forgotPassword',validation(validators.forgotPassword),authController.forgotPassword)
-router.post('/logOut',authController.logOut)
+// router.post('/logOut',authController.logOut)
   
 
 // router.post('/signup',(req,res)=>{

@@ -6,6 +6,38 @@ import subcategoryModel from "../../../../DB/model/subCategory.model.js";
 import brandModel from "../../../../DB/model/brand.model.js";
  
 
+export const getProduct=asyncHandler( async(req,res,next) => {
+    const {productId}=  req.params;
+    const product = await productModel.findById(productId);
+    if(!product) {
+        return res.json({message: "Product not found" })
+    }
+    return res.json({message: "success",product});
+
+})
+export const restoreSoftDelete=asyncHandler( async(req,res,next) => {
+    const {productId} = req.params;
+    const updateSoftDelete= await productModel.findByIdAndUpdate({_id:productId,softDelete:true},
+        {softDelete:false},{new:true});
+
+        return res.json({message: 'success',updateSoftDelete})
+ })
+ 
+export const softDelete=asyncHandler( async(req,res,next) => {
+    const {productId} = req.params;
+    const updateSoftDelete= await productModel.findByIdAndUpdate({_id:productId,softDelete:false},
+        {softDelete:true},{new:true});
+
+        return res.json({message: 'success',updateSoftDelete})
+ })
+ 
+  
+ export const forceDelete=asyncHandler( async(req,res,next) => {
+    const {productId} = req.params;
+    const forceDeleteProduct= await productModel.findByIdAndDelete({_id:productId,softDelete:true}  );
+
+        return res.json({message: 'success',forceDeleteProduct})
+ })
 export const createProduct = asyncHandler(async (req, res, next) => {
 
 
@@ -182,7 +214,7 @@ export const cart= asyncHandler(async (req,res,next) => {
 })
 
 export const getAllProduct =asyncHandler(async (req, res,next) => {
-  const product = await productModel.find() 
+  const product = await productModel.find({softDelete:true}) 
   return res.json({message:'success',product})
 });
 

@@ -328,9 +328,3 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
   user.save();
   return res.json(user);
 });
-
-export const logOut = asyncHandler(async (req, res, next) => {
-  const { token } = req.body;
-  blackListTokens.push(token);
-  return res.json({ message: "token is destroyed", blackListTokens });
-});

@@ -7,6 +7,7 @@ import validation from "../../middleware/validation.middleware.js";
 import auth, { Roles } from "../../middleware/auth.middleware.js";
  
  const router =Router();
+                              //Object.values(Roles)=> change obj to array
  router.use('/:categoryId',auth(Object.values(Roles)),subCategory)
  router.use('/allSubCategory',subCategory)
  router.get('/',catController.getAllCategory)

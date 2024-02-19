@@ -5,17 +5,20 @@ import userModel from '../../DB/model/user.model.js'
 export const Roles={
   user :'user',
   admin :'admin',
-  poth:['user', 'admin','hr']
+  poth:['user', 'admin','hr'] ,
+  softDelete :['admin'], // delete product from users
+  restoreSoftDelete :['admin'], // delete product from users
+    forceDelete :['admin'],// delete from db
 }
 
   const auth  = (accessRoles=[])=>{
     return asyncHandler( async (req,res,next)=>{
-      const {authrization} = req.headers; 
+      const {authorization} = req.headers; 
       
-      if(!authrization?.startsWith('_ahd')){
+      if(!authorization?.startsWith('_ahd')){
         return res.json({message:'Invalid authorization/bearer key'})
       } 
-      const token = authrization.split(process.env.BEARER_KEY)[1]
+      const token = authorization.split(process.env.BEARER_KEY)[1]
  
       // console.log(token)
       const decoded=  await verifyToken(token)

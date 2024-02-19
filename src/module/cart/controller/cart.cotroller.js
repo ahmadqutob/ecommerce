@@ -23,13 +23,33 @@ if(!cart) {
     products:[{productId,qyantity}]
     
   })
-  return res.json({message:'sccess' , newCart})
+   return res.json({message:'sccess' , newCart})
 }
 
 // if user have cart and product in cart / i'll change the qyantity in th cart
- 
+let matchProduct=false; // match product in cart and new added product
+ for(let i =0 ; i < cart.products.length;i++) {
 
-return res.json({message: 'success' , checkCart})
+  console.log(cart.products[i].productId) // object fro batabase
+  console.log(cart.products[i].productId.toString()) // object to string
+  console.log(productId) // string from postman
+  // if(object === string)     problem / compare value ond type
+  // if(object == string)     NoProblem/ compare just value 
+  // if(object.toString() === string)     NoProblem/   string === string
+       
+    if(cart.products[i].productId.toString() === productId){
+      cart.products[i].qyantity = qyantity;
+      matchProduct = true ; // its mean this product = found in cart
+      break;
+    }
+ }
+ if(!matchProduct){ // id product not inclue cart === its new product
+  cart.products.push( {productId, qyantity});
+ }
+
+await cart.save();
+return res.json({message: 'success'});
+
 
 
 });

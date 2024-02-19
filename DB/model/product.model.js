@@ -21,6 +21,7 @@ const productSchema = new Schema(
     
     createdBy: { type: Types.ObjectId, ref: "User",required: true    },
     updatedBy: { type: Types.ObjectId, ref: "User", required: true  },
+    softDelete:{type:Boolean, default: false}
   },
   { timestamps: true }
 );

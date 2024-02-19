@@ -38,7 +38,7 @@ const initapp = (app, express, next) => {
   app.use((err, req, res, next) => {
     if (err) {
       //  return res.json({message:'global error handler',err:err.stack})
-      return res.json({ message: err.message });
+      return res.json({ message: err.message});
     }
   });
 };
