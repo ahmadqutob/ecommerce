@@ -25,7 +25,7 @@ export const createBrand = asyncHandler(async (req, res, next) => {
     { folder: `${process.env.APP_name}/brand` }
   );
 
-  const brand = await brandModel.create({ name,slug,image: { secure_url, public_id },categoryId:req.body.categoryId});
+  const brand = await brandModel.create({ name,slug,image: { secure_url, public_id },categoryId:req.body.categoryId,createdBy:req.user._id,updatedBy:req.user._id});
   return res.status(200).json({ message: "success", brand });
 });
 
@@ -64,7 +64,7 @@ export const updateBrand = asyncHandler( async (req, res, next) => {
         brand.image={secure_url,public_id}
     }
 
-
+    brand.updatedBy= req.user._id
     await brand.save();
     return res.json({message:'success', brand})
 } )

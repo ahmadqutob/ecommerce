@@ -8,5 +8,8 @@
     ).catch( err =>{console.log('connection error' +err)} );
 
  }
-//  connectDB.sync = {alert:true}
-export default connectDB
+//  connectDB.sync = {alert:true} 
+export default connectDB 
+
+ 
+ 

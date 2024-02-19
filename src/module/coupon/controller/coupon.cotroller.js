@@ -38,5 +38,5 @@ export const updateCoupon = async (req, res, next) => {
         coupon.slug= slugify(req.body.name);
     }
     await coupon.save();
-    return res.json({message:'success', coupon})
+    return res.json({message:'success', coupon})  
 } 

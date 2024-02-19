@@ -5,7 +5,9 @@ const brandSchema = new Schema({
 name:{type:String , required:true,unique:true},
  slug:{type:String , required:true},
   categoryId:[{type:Types.ObjectId,ref:'User'}],// brand in category
-createdBy:{type:Types.ObjectId,ref:'User'},
+  createdBy:{type:Types.ObjectId,ref:'User',required:true},
+  updatedBy:{type:Types.ObjectId,ref:'User',required:true},
+  
 image:{type:Object,required:true}, 
 },{ timestamps:true});
 

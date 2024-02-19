@@ -7,6 +7,7 @@ amount:{type:Number , default:1},
 slug:{type:String , required:true},
 usedBy:[{type:Types.ObjectId,ref:'User'}],
 createdBy:{type:Types.ObjectId,ref:'User'},
+
  expireDate:Date,
 },{ timestamps:true});
 

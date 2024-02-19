@@ -12,6 +12,7 @@ import mongoose from "mongoose";
     status:{type:String,enum:['active', 'notActive' ],default:'active'}, // block user or not
     gender:{type:String,enum:['male', 'female' ] },
     forgotPassword:{type:String,default:null}, 
+    changePasswordTime:{type:Date}, 
     // gender:{type:String }, 
      
  

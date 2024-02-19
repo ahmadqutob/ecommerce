@@ -8,8 +8,16 @@ image:{type:Object , required:true},
 createdBy:{type:Types.ObjectId,ref:'User'},
 categoryId:{type:Types.ObjectId,ref:'Category'},
 
-},{timestamps:true});
+},{timestamps:true,
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true},
+});
 
+subcategorySchema.virtual('vitualProduct',{
+    localField:'_id',
+    foreignField:'subCategoryId',
+    ref:'Product'
+})
 const subcategoryModel = mongoose.models.subCategory || model('subCategory',subcategorySchema);
 
 export default subcategoryModel
