@@ -2,8 +2,18 @@ import joi from "joi";
 import { generalFeild } from "../../services/generalFields.js";
 
 export const  createCoupon= joi.object({
-  name: joi.string().min(5).max(20).required(),
-  amount:joi.number().min(1).max(100).positive().required()
+  name: joi.string().min(5).max(20) ,
+  amount:joi.number().min(1).max(100).positive() ,
+     expireDate:joi.required(),
+  // couponName:joi.required()
+}).required();
+
+
+export const  Handelcreatecoupon= joi.object({
+  
+  products:joi.required(),
+   
+  couponName:joi.required()
 }).required();
 
 export const categoryValidation = joi.object({

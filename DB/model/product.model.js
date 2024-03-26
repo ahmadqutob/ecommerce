@@ -7,7 +7,9 @@ const productSchema = new Schema(
     description: { type: String, required: true },
     stock: { type: Number, required: true }, // number of products
     price: { type: Number, required: true },
+
     finalPrice: { type: Number, default: 1 },
+    
     discount: { type: Number, default: 0 },
     colors: [{ type: String, required: true }],
     sizes: [{ type: String, enum: ["s", "m", "lg", "xl"] }],

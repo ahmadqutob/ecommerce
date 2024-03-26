@@ -6,6 +6,7 @@ import couponRouter from "./coupon/coupon.router.js";
 import brandRouter from "./brand/brand.router.js";
 import productRouter from "./product/product.router.js";
 import cartRouter from "./cart/cart.router.js";
+import orderRouter from "./order/order.router.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -23,6 +24,8 @@ const initapp = (app, express, next) => {
   app.use("/brand", brandRouter);
   app.use("/product", productRouter);
   app.use("/cart", cartRouter);
+  app.use("/order", orderRouter);
+
   //  let nodejs go to static folder  not like a function , and get the image
   app.use("/upload", express.static("uploads"));
 

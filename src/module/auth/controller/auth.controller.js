@@ -1,9 +1,6 @@
 import userModel from "../../../../DB/model/user.model.js";
 import { compare, hash } from "../../../services/hashAndCompare.js";
-import {
-  generateToken,
-  verifyToken,
-} from "../../../services/generateAndVeryfyToken.js";
+import {generateToken,verifyToken} from "../../../services/generateAndVeryfyToken.js";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../../../services/sendEmail.js";
 import { asyncHandler } from "../../../services/errorHandler.js";
@@ -236,7 +233,7 @@ export const confairmEmail = asyncHandler(async (req, res) => {
   const user = await userModel.updateOne(
     { email: decoded.email },
     { confairmEmail: true }
-  );
+  ); 
   if (user.confairmEmail) {
     //  or link to frontend url
     return res.status(200).redirect(`${process.env.FE_URL}`); //login page url
