@@ -18,6 +18,10 @@ export const Roles={
    orderCanceled :[ 'admin'], // to update status
    orderApproved :[ 'admin'], // to update status
    orderDelivered :[ 'admin'], // to update status
+  //  review
+  createReview :['admin'], // to create review to product
+   
+
  
 }
 

@@ -8,7 +8,7 @@ import { Types } from "mongoose";
     if(Types.ObjectId.isValid(value)){
         return true;
     }
-    return helper.message(`categoryId is invalid -> ${value}`);
+    return helper.message(`value is invalid -> ${value}`);
 }
 
 
