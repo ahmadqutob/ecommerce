@@ -54,3 +54,32 @@ return res.json({message: 'success'});
 
 });
  
+
+export const deleteItem = asyncHandler( async (req, res,next) => {
+
+  const {productsIds}= req.body;
+
+  const cart =await cartModel.updateOne({userId:req.user._id},{
+    $pull:{
+      products:{
+        productId:{$in:productsIds}
+      }
+    }
+  })
+  return res.json({message: 'success',cart});
+})
+
+export const clearCart = asyncHandler( async (req, res,next) => {
+
+const cart =await cartModel.updateOne({userId:req.user._id},{
+  products:[]
+})
+ 
+  return res.json({message: 'success',cart});
+})
+
+export const carts = asyncHandler( async (req, res,next) => {
+
+  const cart =await cartModel.findOne({userId:req.user._id});
+  return res.json(cart);
+  })

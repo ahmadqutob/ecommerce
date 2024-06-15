@@ -7,4 +7,11 @@ import { Roles } from "../../middleware/auth.middleware.js";
  
  const router =Router();
    router.post('/createCart', auth(Roles.poth),cartController.createCart)
- export default router
+   router.patch('/deleteItem', auth(Roles.poth),cartController.deleteItem)
+   router.patch('/clearCart', auth(Roles.poth),cartController.clearCart)
+   router.get('/carts', auth(Roles.poth),cartController.carts)
+   
+
+
+   
+   export default router

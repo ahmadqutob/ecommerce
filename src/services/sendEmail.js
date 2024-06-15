@@ -16,6 +16,7 @@ let info =await transporter.sendMail({
     to ,
     subject,
     html,
+    // attachments:attachment if u want to send file (pdf file)
 })
 
 

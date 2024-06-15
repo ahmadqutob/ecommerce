@@ -26,6 +26,14 @@ import reviewRouter from '../review/review.router.js'
     router.delete('/forceDelete/:productId',auth(Roles.forceDelete),productController.forceDelete)
     
     router.get('/product/:productId',productController.getProduct)
+    router.get('/withReviews',productController.allProductWithReviews)
+
+    // pagination/filter/sort
+    router.get('/pagination',productController.pagination)
+    router.get('/filter',productController.filterProduct)
+    router.get('/sort',productController.sortProduct)
+    router.get('/search',productController.search)
+     
  
  export default router
 

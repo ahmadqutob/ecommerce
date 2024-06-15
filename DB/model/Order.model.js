@@ -7,9 +7,10 @@ const orderSchema = new Schema({
  phoneNumber:{type:[{type:String,required:true}]},
 
  products:[{
+ name:{type:String,required:true,default:'orderName'},
   productId:{type:Types.ObjectId,ref:'Product',required:true},
-  qty:{type:Number,required:true},
-  unitePrice:{type:Number,required:true},
+  qty:{type:Number },
+   unitePrice:{type:Number,required:true},
   finalPrice:{type:Number,required:true}
  }] ,
 

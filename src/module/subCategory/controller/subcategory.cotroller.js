@@ -12,12 +12,12 @@ import { softDelete } from "../../product/controller/product.cotroller.js";
 
 // });
 export const getProduct= asyncHandler(async (req, res, next) => {
-                    // categortId(parent) / subCategoryId(parent)
-    //  categorys/65b3b0d768d8bb12b06c03fa/65b3b0d768d8bb12b06c03fa/product
+ 
         const {subCategoryId} =req.params;
-        const subCategory_product = await subcategoryModel.findById(subCategoryId).populate({
-            path:'vitualProduct',
-            match:{ softDelete:{$eq:false}} //condition if softDelete is false
+        const subCategory_product = await subcategoryModel.find().populate({
+            path:'vitualProductt',
+            // match:{ softDelete:{$eq:false}} ,//condition if softDelete is false
+             populate:{path:'reviews'}
         });
         // const subCategory_product = await subcategoryModel.findById(subCategoryId).populate({
         //     path:'vitualProduct',

@@ -14,7 +14,7 @@ import validation from "../../middleware/validation.middleware.js";
  router.get('/getSubCategory',catController.getSubCategory) //specific sub category
  router.get('/',catController.getAllSubCategory) //specific sub category
  
-    router.get('/subCategory/:subCategoryId/product',catController.getProduct) 
+    router.get('/subCategory/:subCategoryId/productt',catController.getProduct) 
 
 
  // router.get('/:myid',validation(validators.getsubCategories),catController.getCategory)

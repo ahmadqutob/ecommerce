@@ -7,7 +7,7 @@ const reviewSchema = new Schema({
  orderId:{type:Types.ObjectId, ref:'Order',required:true}, // to know order Status
  rating:{type:Number , required:true},
  createdBy:{type:Types.ObjectId, ref:'User',required:true},
-  
+ image:{type:Object , required:true},
   
  
  },{ timestamps:true}); 

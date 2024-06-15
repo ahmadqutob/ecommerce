@@ -5,27 +5,30 @@ import moment from "moment";
 import productModel from "../../../../DB/model/product.model.js";
 import orderModel from "../../../../DB/model/Order.model.js";
  import cartModel from "../../../../DB/model/cart.model.js";
-    
+ import  createInvoice  from "../../../services/pdf.service.js";
+import { request } from "express";
+
+   
  
 export const createOrder= asyncHandler(async (req, res, next) => {
   
  const {products , phoneNumber, payment ,couponName,address,couponId,status}= req.body;
-
-if(couponName){
-
+ 
+ if(couponName){
+   // 1- if coupon in found
   const coupon = await couponModel.findOne({name:couponName.toLowerCase()})
 
   if(!coupon){
     return next(new Error(`Invalid coupon NAME ${couponName}`));
   }
 
-
+//2-  check expire date for coupon
   let now= moment() 
   let parsed = moment(coupon.expireDate, 'YYYY-MM-DD')
 
  
   let differnce= now.diff(parsed,'days')  //years, months, weeks, days, hours, minutes, and seconds
- if(differnce >=0){
+ if(differnce >=0){ //if now >= parsed -> expired DATE
   return next(new Error(`coupon is expired`))
  }
  if(coupon.usedBy.includes(req.user._id)){
@@ -36,19 +39,18 @@ if(couponName){
 
 }
 
-// check if product is found
-// check stock product
-// check if product is deleted
+ 
  let   ProductList =[];
  let   ProductIds =[];
 
- let subTotal=0 ;// the final proce for product after discount/coupon
-for (const product of products) { // iterate over product values
+ let subTotal=0 ;// the final price for product after discount/coupon
+ 
+for (const product of products) {// loop of products from user
 
   const checkProduct = await productModel.findOne({
     _id:product.productId,
     stock:{$gte:product.qty},
-    softDelete:false,
+    // softDelete:false, errrrrrrrrrrrrrrrrrrrrrrror
   })
   if(!checkProduct){
     return next(new Error(`invalid product ${product.productId}`));
@@ -58,8 +60,8 @@ for (const product of products) { // iterate over product values
      product.unitePrice= checkProduct.finalPrice; //(productModel)final price for product after discount
   product.finalPrice= product.qty * checkProduct.finalPrice; 
  ProductIds.unshift(product.productId)//add products ids to array to delete it using $pull
-   subTotal +=  product.finalPrice;
-  ProductList.unshift(product)
+   subTotal +=  product.finalPrice; //without coupon
+  ProductList.unshift(product) // to save all products information
   }
  
    const createeOrder= await orderModel.create({
@@ -93,30 +95,57 @@ const cart= await cartModel.updateOne({userId:req.user._id},{
           products:{
              productId:{$in:ProductIds}
             //postMan:{$in: ORDER_PRODUCT}
+            //بدي امسح المنتجات  حسب الايدي الي عندي من الكارد 
+            // منمسحهم من الكارد لانا اشتريناهم
           }
         }
 })
+//   const order=await orderModel.findOne({userId: req.user._id})
+// // send invoice to customer
+// const invoice = {
+//   shipping: {
+//     name:req.user.username,
+//     address ,
+//     city: "city if needed",
+//     status: `status :${order.status}`,
+//     // country: "country",
+//     postal_code: 94111 //just number
+//   },
+//   // items: [
+//   //   {
+//   //     item: "item",
+//   //     description: "description",
+//   //     quantity: 2,
+//   //     amount: 6000
+//   //   } 
+//   // ]
+//   items: order.products //from DB
+//   ,
+   
+//   subtotal: order.subTotal *100,
+//   paid: 0, // Paid To Date
+//   invoice_nr: order._id//invoice number/ ID
+// };
+
+// createInvoice(invoice, "invoice.pdf");
   return res.json({message: 'success',createeOrder}  )
   
 });
 
 
-
-
-
-
  
 export const createOrderWithAllItems= asyncHandler(async (req, res, next) => {
-  
- const {products , phoneNumber, payment ,couponName,address,couponId,status}= req.body;
+ 
 
 
- const cart = await cartModel.findOne({userId: req.user._id});
+const {products ,qty, phoneNumber, payment ,couponName,address,couponId,status}= req.body;
+
+
+const cart = await cartModel.findOne({userId: req.user._id});
   if(!cart?.products?.length){
     return next(new Error("empty cart",{cause:400}));
   }
-
-req.body.products= cart.products
+ req.body.products= cart.products //because there is many scpoes we but it in req,body
  if(couponName){
  
    const coupon = await couponModel.findOne({name:couponName.toLowerCase()})
@@ -147,41 +176,47 @@ req.body.products= cart.products
   let   ProductIds =[];
  
   let subTotal=0 ;// the final proce for product after discount/coupon
- for (let product of req.body.products) { // iterate over product values
- 
+  for (let product of req.body.products) { // iterate over product values
+    
    const checkProduct = await productModel.findOne({
      _id:product.productId,
-     stock:{$gte:product.qty},
-      softDelete:false,
+       stock:{$gte:product.qyantity},  
+    //  softDelete:false,
    })
- 
-    // add to product object
-   // finalPrice =حق المننج الواحد
-      product.unitePrice= checkProduct.finalPrice; //(productModel)final price for product after discount
-   product.finalPrice= product.qty * checkProduct.finalPrice; 
-  ProductIds.unshift(product.productId)//add products ids to array to delete it using $pull
-    subTotal +=  product.finalPrice;
-    console.log('idsss',ProductIds)
-   ProductList.unshift(product)
+   if(!checkProduct){
+    return next(new Error(`invalid product ${product.productId}`));
   }
-   
-   
-   const createeOrder= await orderModel.create({
-     userId:req.user._id,
-     address,
-     phoneNumber,
-     products:ProductList,
-     subTotal,
-     couponId:req.body.coupon?._id,
-     payment,
-     finalPrice: subTotal - (subTotal * ((req.body.coupon?.amount || 0)/100)),
-     status:(payment === 'card')? 'approved' : 'pending',
-   })
+  product=  product.toObject(); // change data from BJON(from db) to JSON to add data to Product object
+    product.name= checkProduct.name; 
+  product.qty= checkProduct.qty;
+    product.unitePrice= checkProduct.finalPrice; //(productModel)final price for product after discount
+   product.finalPrice= product.qyantity * checkProduct.finalPrice; 
+  ProductIds.unshift(product.productId)//add products ids to array to delete it from cart using $pull
+      subTotal +=  product.finalPrice;
+   ProductList.unshift(product)
+   console.log(product)
+  }
+  const order= await orderModel.findOne({userId:req.user._id})
  
+ 
+
+
+  const createeOrder= await orderModel.create({
+    userId:req.user._id,
+    address,
+    phoneNumber,
+    products:ProductList,
+    subTotal,
+    couponId:req.body.coupon?._id,
+    payment,
+    finalPrice: subTotal - (subTotal * ((req.body.coupon?.amount || 0)/100)),
+    status:(payment === 'card')? 'approved' : 'pending',
+  })
+  
  // update quantity for products
  for (const product of req.body.products) { // iterate over product values
  
-   const updateqty=await productModel.updateOne({_id:product.productId},{$inc:{stock:-product.qty}})
+   const updateqty=await productModel.updateOne({_id:product.productId},{$inc:{stock:-product.qyantity}})
  
  }
  // update coupon -> usedBy if user used coupon
@@ -190,11 +225,41 @@ req.body.products= cart.products
  
  }
  
- // if i want to delete item from cart using id product
+
+
+   // send invoice to customer
+  const invoice = {
+    shipping: {
+      name:req.user.username,
+      address ,
+      city: "city if needed",
+      status: `status :${order.status}`,
+      // country: "country",
+      postal_code: 94111 //just number
+    },
+    // items: [
+    //   {
+    //     item: "item",
+    //     description: "description",
+    //     quantity: 2,
+    //     amount: 6000
+    //   } 
+    // ]
+    items: order.products //from DB
+    ,
+     
+    subtotal: order.subTotal *100,
+    paid: 0, // Paid To Date
+    invoice_nr: order._id//invoice number/ ID
+  };
+  
+  createInvoice(invoice, "invoice.pdf");
+   // if i want to delete item from cart using id product
  //  id delete it decause i want to bye it 
- await cartModel.updateOne({userId: req.user._id},{
-  products: [],
-  })
+ 
+//  await cartModel.updateOne({userId: req.user._id},{
+//   products: [],
+//   })
   return res.status(201).json({message: 'success', createeOrder});
  
     

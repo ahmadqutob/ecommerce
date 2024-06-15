@@ -7,14 +7,29 @@ import brandRouter from "./brand/brand.router.js";
 import productRouter from "./product/product.router.js";
 import cartRouter from "./cart/cart.router.js";
 import orderRouter from "./order/order.router.js";
-
+import wishRouter from "./wishlist/wishlist.router.js";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import cors from 'cors'
 const myLocation = path.dirname(fileURLToPath(import.meta.url));
 
 const initapp = (app, express, next) => {
+
+  // web how can access project data
+  // var whitelist = ['http://example1.com', 'http://example2.com']
+  // var corsOptions = {
+  //   origin: function (origin, callback) {
+  //     if (whitelist.indexOf(origin) !== -1) {
+  //       callback(null, true)
+  //     } else {
+  //       callback(new Error('Not allowed by CORS'))
+  //     }
+  //   }
+  // }
+
+
   connectDB();
+  // app.use(cors(corsOptions)); // to allow front-end to use project and fetch data
   app.use(express.json());
 
   app.use("/auth", authRouter);
@@ -25,6 +40,7 @@ const initapp = (app, express, next) => {
   app.use("/product", productRouter);
   app.use("/cart", cartRouter);
   app.use("/order", orderRouter);
+  app.use("/wishlist", wishRouter);
 
   //  let nodejs go to static folder  not like a function , and get the image
   app.use("/upload", express.static("uploads"));

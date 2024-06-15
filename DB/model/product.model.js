@@ -25,8 +25,20 @@ const productSchema = new Schema(
     updatedBy: { type: Types.ObjectId, ref: "User", required: true  },
     softDelete:{type:Boolean, default: false}
   },
-  { timestamps: true }
+  { timestamps: true,
+   toJSON:{virtuals:true},
+   toObject:{virtuals:true}
+  }
+
+  
 );
+
+productSchema.virtual('reviews',{
+  localField:'_id',
+  foreignField:'productId', // from review model
+  ref:'Review' // from review model
+})
+
 
 const productModel = mongoose.models.Product || model("Product", productSchema);
 
