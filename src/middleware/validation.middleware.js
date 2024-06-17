@@ -11,7 +11,7 @@ import { signinSchema } from "../module/auth/auth.validation.js"
       if(req.file){
          inputDate.file=req.file
       }
-      console.log('inputDate',inputDate)
+      // console.log('inputDate',inputDate)
         const validationRes = schema.validate(inputDate,{abortEarly:false});
        
         if(validationRes.error?.details){

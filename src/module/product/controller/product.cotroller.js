@@ -65,7 +65,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
         req.body.subImage= []
                 for(const file of req.files.subImage){
                   
-                        console.log(req.files.subImage);
+                        // console.log(req.files.subImage);
                         const {secure_url,public_id}= await cloudinary.uploader.upload(file.path,{folder:`${process.env.APP_name}/products/subImage`})
                         req.body.subImage.unshift({secure_url,public_id})
                  }
@@ -80,7 +80,7 @@ const productt = await productModel.create(req.body)
 if(!productt){
     return next( new Error('faild to create productt'));
 }
-    console.log(req.body.subImagee)
+    // console.log(req.body.subImagee)
    return res.json({message: 'success', productt})
    
    
@@ -181,8 +181,8 @@ export const updateProduct= asyncHandler(async (req,res,next)=>{
         for(const file of req.files.subImage){
             const {secure_url,public_id}= await cloudinary.uploader.upload(file.path,{folder:`${process.env.APP_name}/products/subImage`})
             subImages.push(secure_url,public_id)
-            console.log(file.newProduct)
-            console.log(file)
+            // console.log(file.newProduct)
+            // console.log(file)
             // await cloudinary.uploader.destroy()
             // await cloudinary.uploader.destroy()
         }
@@ -237,7 +237,7 @@ export const allProductWithReviews =asyncHandler(async (req, res,next) => {
     if(!size || size <=0){
         page = 3;
     }
-console.log(req.query);
+// console.log(req.query);
  
   const product = await productModel.find().limit(size).skip(skip)
   // get all products without condiations EX:(price > 100)
@@ -255,7 +255,7 @@ console.log(req.query);
         if(!size || size <=0){
             page = 3;
         }
-console.log(req.query);
+// console.log(req.query);
 // if problem in $
  
 // * const product = await productModel.find().limit(size).skip(skip)// get all products without condiations EX:(price > 100)
@@ -293,7 +293,7 @@ console.log(req.query);
 const exQueryParams=['page', 'size','sort','search']
 const filterQuery={...req.query}
 
-console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
+// console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
 exQueryParams.map(params=>{  
     delete filterQuery[params]
     }  )
@@ -329,11 +329,11 @@ if(!size || size <=0){
 const exQueryParams=['page', 'size','sort','search']
 const filterQuery={...req.query}
 
-console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
+// console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
 exQueryParams.map(params=>{  
 delete filterQuery[params]
 }  )
-console.log(filterQuery) ;//  price: { gt: '320' }
+// console.log(filterQuery) ;//  price: { gt: '320' }
 
 const query=JSON.parse( JSON.stringify(filterQuery).replace(/(gt|gte|lt|lt|in|nin|eq|neq)/g, match => `$${match}` ))
 const product = await productModel.find(query).limit(size).skip(skip).sort(req.query.sort.replaceAll(',',' '))
@@ -359,11 +359,11 @@ export const search =asyncHandler(async (req, res,next) => {
     const exQueryParams=['page', 'size','sort','search']
     const filterQuery={...req.query}
     
-    console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
+    // console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
     exQueryParams.map(params=>{  
     delete filterQuery[params]
     }  )
-    console.log(filterQuery) ;//  price: { gt: '320' }
+    // console.log(filterQuery) ;//  price: { gt: '320' }
     
     const query=JSON.parse( JSON.stringify(filterQuery).replace(/(gt|gte|lt|lt|in|nin|eq|neq)/g, match => `$${match}` ))
     const product = await productModel.find(query).limit(size).skip(skip).sort(req.query.sort?.replaceAll(',',' ')).find({

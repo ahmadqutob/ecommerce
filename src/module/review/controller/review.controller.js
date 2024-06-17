@@ -52,7 +52,7 @@ export const countOf = asyncHandler(async(req, res,next)=>{
 
    revieww.countDocuments({ productId: productId })
   .then(count => {
-    console.log('Number of reviews for product:', count);
+    // console.log('Number of reviews for product:', count);
   })
   .catch(err => {
     console.error('Error:', err);

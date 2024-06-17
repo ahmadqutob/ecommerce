@@ -20,7 +20,7 @@ export const createCoupon= asyncHandler(async (req, res, next) => {
   let expDate=new Date(expireDate) //"2024-03-19T22:00:00.000Z" 
   let now = new  Date();           //"2024-03-18T19:57:24.073Z"
   // change time to SARVER time -> using .getTime()
-  console.log(now,expDate)
+  // console.log(now,expDate)
  if(now   >= expDate ){ //true -> expire coupon date
 return next(new Error('Invalid coupon date'));
  }  

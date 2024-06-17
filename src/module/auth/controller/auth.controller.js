@@ -278,7 +278,7 @@ export const signin = async (req, res, next) => {
   }
   const match = await compare(password, user.password);
   if (password === user.password) {
-    console.log(user._id);
+    // console.log(user._id);
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.SEGNATURE,

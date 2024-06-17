@@ -30,9 +30,9 @@ if(!cart) {
 let matchProduct=false; // match product in cart and new added product
  for(let i =0 ; i < cart.products.length;i++) {
 
-  console.log(cart.products[i].productId) // object fro batabase
-  console.log(cart.products[i].productId.toString()) // object to string
-  console.log(productId) // string from postman
+  // console.log(cart.products[i].productId) // object fro batabase
+  // console.log(cart.products[i].productId.toString()) // object to string
+  // console.log(productId) // string from postman
   // if(object === string)     problem / compare value ond type
   // if(object == string)     NoProblem/ compare just value 
   // if(object.toString() === string)     NoProblem/   string === string

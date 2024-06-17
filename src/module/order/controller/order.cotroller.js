@@ -194,7 +194,7 @@ const cart = await cartModel.findOne({userId: req.user._id});
   ProductIds.unshift(product.productId)//add products ids to array to delete it from cart using $pull
       subTotal +=  product.finalPrice;
    ProductList.unshift(product)
-   console.log(product)
+  //  console.log(product)
   }
   const order= await orderModel.findOne({userId:req.user._id})
  

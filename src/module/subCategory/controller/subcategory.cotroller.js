@@ -30,7 +30,7 @@ export const createSubCategory = asyncHandler(async (req, res, next) => {
  
  const {categoryId} = req.params;
  const {name}=req.body;
-console.log( req.params,name)
+// console.log( req.params,name)
  if(await subcategoryModel.findOne({name})){
   return next(new Error(`duplicate sub category name ${name}`));
  }
