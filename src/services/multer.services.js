@@ -25,14 +25,14 @@ export const fileValidation={
 function fileUpload  (customPath='public',customValidation) {
   
 //   if i want to change my folder direction i use path
-    console.log(myLocation)
+    // console.log(myLocation)
     const fullpath = path.join(myLocation,`../../uploads/${customPath}`)
-    console.log(fullpath)
+    // console.log(fullpath)
     if(!fs.existsSync(fullpath)){
         fs.mkdirSync(fullpath) // create folder if theres no folder
     } 
 
-    console.log(fs.existsSync(fullpath)) // return true if folder founded
+    // console.log(fs.existsSync(fullpath)) // return true if folder founded
      const storage = multer.diskStorage({
         destination: (req,file,cb)=>{
             // file.ahmad=' i can send it to profilePic function in file'

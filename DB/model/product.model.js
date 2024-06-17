@@ -7,7 +7,9 @@ const productSchema = new Schema(
     description: { type: String, required: true },
     stock: { type: Number, required: true }, // number of products
     price: { type: Number, required: true },
+
     finalPrice: { type: Number, default: 1 },
+    
     discount: { type: Number, default: 0 },
     colors: [{ type: String, required: true }],
     sizes: [{ type: String, enum: ["s", "m", "lg", "xl"] }],
@@ -23,8 +25,20 @@ const productSchema = new Schema(
     updatedBy: { type: Types.ObjectId, ref: "User", required: true  },
     softDelete:{type:Boolean, default: false}
   },
-  { timestamps: true }
+  { timestamps: true,
+   toJSON:{virtuals:true},
+   toObject:{virtuals:true}
+  }
+
+  
 );
+
+productSchema.virtual('reviews',{
+  localField:'_id',
+  foreignField:'productId', // from review model
+  ref:'Review' // from review model
+})
+
 
 const productModel = mongoose.models.Product || model("Product", productSchema);
 

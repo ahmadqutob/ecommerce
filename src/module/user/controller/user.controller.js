@@ -25,7 +25,7 @@ export const profilePic=asyncHandler( async(req,res,next)=>{
         //    const cloud = await cloudinary.uploader.upload(req.file.path,{folder:`saraha/user/${req.id}`});
             
         const {public_id,secure_url} = await cloudinary.uploader.upload(req.file.path,{folder:`saraha/user/${req.id}`});
-       console.log({message:secure_url})
+    //    console.log({message:secure_url})
         //   return res.json({message:cloud})
         
       
@@ -87,7 +87,7 @@ export const profilePic=asyncHandler( async(req,res,next)=>{
             for(const file of req.files){
                 coverPicture.push(`${file.dest}${file.filename}`)
             }
-            console.log(coverPicture)
+            // console.log(coverPicture)
         // if(!req.files){
         //     return res.json({message:'file is required'})
         //      }

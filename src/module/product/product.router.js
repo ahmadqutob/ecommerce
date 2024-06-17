@@ -2,10 +2,14 @@ import { Router } from "express";
 import  * as productController from './controller/product.cotroller.js'
 import fileUpload, { fileValidation } from "../../services/cloudinary.js";
 import auth, { Roles } from "../../middleware/auth.middleware.js";
+import reviewRouter from '../review/review.router.js'
 // import * as validators from './product.validation.js'
 //  import validation from "../../middleware/validation.middleware.js";
  
- const router =Router();
+ const router =Router({mergeParams: true}); // merge with review
+
+    router.use('/:productId/review',reviewRouter)
+
     router.post('/createProduct',auth(Object.values(Roles)),fileUpload(fileValidation.image).fields([
         {name: 'mainImage',maxCount: 1},
         {name: 'subImage',maxCount: 5},
@@ -22,6 +26,14 @@ import auth, { Roles } from "../../middleware/auth.middleware.js";
     router.delete('/forceDelete/:productId',auth(Roles.forceDelete),productController.forceDelete)
     
     router.get('/product/:productId',productController.getProduct)
+    router.get('/withReviews',productController.allProductWithReviews)
+
+    // pagination/filter/sort
+    router.get('/pagination',productController.pagination)
+    router.get('/filter',productController.filterProduct)
+    router.get('/sort',productController.sortProduct)
+    router.get('/search',productController.search)
+     
  
  export default router
 

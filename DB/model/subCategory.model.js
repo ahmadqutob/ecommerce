@@ -13,7 +13,7 @@ categoryId:{type:Types.ObjectId,ref:'Category'},
     toObject:{virtuals:true},
 });
 
-subcategorySchema.virtual('vitualProduct',{
+subcategorySchema.virtual('vitualProductt',{
     localField:'_id',
     foreignField:'subCategoryId',
     ref:'Product'

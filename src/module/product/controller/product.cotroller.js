@@ -8,10 +8,8 @@ import brandModel from "../../../../DB/model/brand.model.js";
 
 export const getProduct=asyncHandler( async(req,res,next) => {
     const {productId}=  req.params;
-    const product = await productModel.findById(productId);
-    if(!product) {
-        return res.json({message: "Product not found" })
-    }
+    const product = await productModel.find({productId});
+   
     return res.json({message: "success",product});
 
 })
@@ -67,7 +65,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
         req.body.subImage= []
                 for(const file of req.files.subImage){
                   
-                        console.log(req.files.subImage);
+                        // console.log(req.files.subImage);
                         const {secure_url,public_id}= await cloudinary.uploader.upload(file.path,{folder:`${process.env.APP_name}/products/subImage`})
                         req.body.subImage.unshift({secure_url,public_id})
                  }
@@ -82,7 +80,7 @@ const productt = await productModel.create(req.body)
 if(!productt){
     return next( new Error('faild to create productt'));
 }
-    console.log(req.body.subImagee)
+    // console.log(req.body.subImagee)
    return res.json({message: 'success', productt})
    
    
@@ -183,8 +181,8 @@ export const updateProduct= asyncHandler(async (req,res,next)=>{
         for(const file of req.files.subImage){
             const {secure_url,public_id}= await cloudinary.uploader.upload(file.path,{folder:`${process.env.APP_name}/products/subImage`})
             subImages.push(secure_url,public_id)
-            console.log(file.newProduct)
-            console.log(file)
+            // console.log(file.newProduct)
+            // console.log(file)
             // await cloudinary.uploader.destroy()
             // await cloudinary.uploader.destroy()
         }
@@ -214,13 +212,169 @@ export const cart= asyncHandler(async (req,res,next) => {
 })
 
 export const getAllProduct =asyncHandler(async (req, res,next) => {
-  const product = await productModel.find({softDelete:true}) 
-  return res.json({message:'success',product})
+  const product = await productModel.find().populate('reviews')
+  return res.json({message:'s',product})
 });
 
-// export const getProduct =asyncHandler(async (req, res,next) => {
-//   const product = await productModel.findById(req.params.myid);
-//   return res.json({message:'success',product})
-// });
 
+
+
+export const allProductWithReviews =asyncHandler(async (req, res,next) => {
+    const product = await productModel.find().populate('reviews')
+    return res.json({message:'s',product})
+  });
  
+
+  export const pagination =asyncHandler(async (req, res,next) => {
+   
+    let {page,size} = req.query;
+    // know skip
+    const skip = (page -1 ) * size
+
+    if(!page || page <=0){
+        page = 1;
+    }
+    if(!size || size <=0){
+        page = 3;
+    }
+// console.log(req.query);
+ 
+  const product = await productModel.find().limit(size).skip(skip)
+  // get all products without condiations EX:(price > 100)
+  return res.json({message:'pagination',product})
+  })
+
+  export const filterProduct =asyncHandler(async (req, res,next) => {
+   
+        let {page,size} = req.query;
+        const skip = (page -1 ) * size
+
+        if(!page || page <=0){
+            page = 1;
+        }
+        if(!size || size <=0){
+            page = 3;
+        }
+// console.log(req.query);
+// if problem in $
+ 
+// * const product = await productModel.find().limit(size).skip(skip)// get all products without condiations EX:(price > 100)
+
+// [solution to add condition EX: price[$gte]: 100 ]
+//  convert req.query to string(stringfy) to replace (in -> $in) to add $
+// convert string to parse(json.parse) 
+    //  const query= JSON.parse( JSON.stringify(req.query).replace(/(gt|gte|lt|lte|in|nin|eq|neq|)/g,match => `$${match}`)
+    // )
+
+// ************ 1- find without condition********
+// const product = await productModel.find().limit(size).skip(skip) without condition
+// http://localhost:3000/product/pagination?page=1&size=2 كم منتج يعرض
+
+
+// ************ 2- find with condition [$gth]*****
+// const product = await productModel.find(req.query).limit(size).skip(skip)
+// http://localhost:3000/product/pagination?price[$lt]=320 عرض المنتجات حسب الشرط
+
+
+// ************ 2- remove $ from req.query price[gt]=320*****
+
+//  console.log(req.query);// { price: { lt: '320' } }
+// const query=JSON.parse( JSON.stringify(req.query).replace(/(gt|gte|lt|lt|in|nin|eq|neq)/g, match => `$${match}` ))
+// console.log(query);//    { price: { '$gt': '320' } }
+//  // http://localhost:3000/product/pagination?price[gt]=320 نرسل بدون$
+// const product = await productModel.find(query).limit(size).skip(skip)
+ 
+// ERROR -> { price: { '$gt': '320' }, page: '4' } رح يضيف دزلار للبيج ولازم نمسحها
+
+
+
+// ************ 3-[deep Copy] solve error $page=1********
+
+const exQueryParams=['page', 'size','sort','search']
+const filterQuery={...req.query}
+
+// console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
+exQueryParams.map(params=>{  
+    delete filterQuery[params]
+    }  )
+    console.log(filterQuery) ;//  price: { gt: '320' }
+
+  const query=JSON.parse( JSON.stringify(filterQuery).replace(/(gt|gte|lt|lt|in|nin|eq|neq)/g, match => `$${match}` ))
+  const product = await productModel.find(query).limit(size).skip(skip)
+
+
+return res.json(product)
+// http://localhost:3000/product/pagination?price[gt]=320&page=4
+  });
+ 
+
+
+  
+
+
+  
+  export const sortProduct =asyncHandler(async (req, res,next) => {
+ 
+// ************ 3-[deep Copy] solve error $page=1********
+let {page,size} = req.query;
+const skip = (page -1 ) * size
+
+if(!page || page <=0){
+    page = 1;
+}
+if(!size || size <=0){
+    page = 3;
+}
+
+const exQueryParams=['page', 'size','sort','search']
+const filterQuery={...req.query}
+
+// console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
+exQueryParams.map(params=>{  
+delete filterQuery[params]
+}  )
+// console.log(filterQuery) ;//  price: { gt: '320' }
+
+const query=JSON.parse( JSON.stringify(filterQuery).replace(/(gt|gte|lt|lt|in|nin|eq|neq)/g, match => `$${match}` ))
+const product = await productModel.find(query).limit(size).skip(skip).sort(req.query.sort.replaceAll(',',' '))
+
+
+return res.json(product)
+// http://localhost:3000/product/pagination?price[gt]=320&page=4
+});
+
+export const search =asyncHandler(async (req, res,next) => {
+ 
+    // ************ 3-[deep Copy] solve error $page=1********
+    let {page,size} = req.query;
+    const skip = (page -1 ) * size
+    
+    if(!page || page <=0){
+        page = 1;
+    }
+    if(!size || size <=0){
+        page = 3;
+    }
+    
+    const exQueryParams=['page', 'size','sort','search']
+    const filterQuery={...req.query}
+    
+    // console.log(filterQuery)  //{ price: { gt: '320' }, page: '4' }
+    exQueryParams.map(params=>{  
+    delete filterQuery[params]
+    }  )
+    // console.log(filterQuery) ;//  price: { gt: '320' }
+    
+    const query=JSON.parse( JSON.stringify(filterQuery).replace(/(gt|gte|lt|lt|in|nin|eq|neq)/g, match => `$${match}` ))
+    const product = await productModel.find(query).limit(size).skip(skip).sort(req.query.sort?.replaceAll(',',' ')).find({
+        $or:[
+           { name:{$regex: req.query.search,$options:'i'}},
+        {description:{$regex: req.query.search,$options:'i'}},
+        ]
+    })
+    
+    
+    return res.json(product)
+    // http://localhost:3000/product/pagination?price[gt]=320&page=4
+    });
+    

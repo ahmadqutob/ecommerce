@@ -2,13 +2,14 @@ import mongoose  ,{Schema,Types,model} from   "mongoose";
 
 const couponSchema = new Schema({
 
-name:{type:String , required:true,unique:true},
-amount:{type:Number , default:1},
-slug:{type:String , required:true},
-usedBy:[{type:Types.ObjectId,ref:'User'}],
-createdBy:{type:Types.ObjectId,ref:'User'},
+    name:{type:String , required:true,unique:true},
+    amount:{type:Number , default:1},
+    slug:{type:String , required:true},
+    usedBy:[{type:Types.ObjectId,ref:'User'}],
+    createdBy:{type:Types.ObjectId,ref:'User'},
+    updatedBy:{type:Types.ObjectId,ref:'User'},
+    expireDate:{type:String, required:true}
 
- expireDate:Date,
 },{ timestamps:true});
 
 

@@ -1,4 +1,4 @@
- import {model, Schema } from "mongoose";
+ import {model, Schema, Types } from "mongoose";
 import mongoose from "mongoose";
  
   const userSchema= new Schema({
@@ -13,6 +13,7 @@ import mongoose from "mongoose";
     gender:{type:String,enum:['male', 'female' ] },
     forgotPassword:{type:String,default:null}, 
     changePasswordTime:{type:Date}, 
+    wishlist:[{type:Types.ObjectId,ref:'product'}]
     // gender:{type:String }, 
      
  

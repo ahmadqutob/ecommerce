@@ -8,7 +8,21 @@ export const Roles={
   poth:['user', 'admin','hr'] ,
   softDelete :['admin'], // delete product from users
   restoreSoftDelete :['admin'], // delete product from users
-    forceDelete :['admin'],// delete from db
+   forceDelete :['admin'],// delete from db
+   createCoupon :['admin'], // create
+   createOrder :['admin'], // create
+   cancelOrder :['user','admin'], // create
+  //  change order status
+  adminPermission:[ 'admin'],
+   orderPending :[ 'admin'], // to update status
+   orderCanceled :[ 'admin'], // to update status
+   orderApproved :[ 'admin'], // to update status
+   orderDelivered :[ 'admin'], // to update status
+  //  review
+  createReview :['admin'], // to create review to product
+   
+
+ 
 }
 
   const auth  = (accessRoles=[])=>{

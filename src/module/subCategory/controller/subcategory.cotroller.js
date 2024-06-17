@@ -12,12 +12,12 @@ import { softDelete } from "../../product/controller/product.cotroller.js";
 
 // });
 export const getProduct= asyncHandler(async (req, res, next) => {
-                    // categortId(parent) / subCategoryId(parent)
-    //  categorys/65b3b0d768d8bb12b06c03fa/65b3b0d768d8bb12b06c03fa/product
+ 
         const {subCategoryId} =req.params;
-        const subCategory_product = await subcategoryModel.findById(subCategoryId).populate({
-            path:'vitualProduct',
-            match:{ softDelete:{$eq:false}} //condition if softDelete is false
+        const subCategory_product = await subcategoryModel.find().populate({
+            path:'vitualProductt',
+            // match:{ softDelete:{$eq:false}} ,//condition if softDelete is false
+             populate:{path:'reviews'}
         });
         // const subCategory_product = await subcategoryModel.findById(subCategoryId).populate({
         //     path:'vitualProduct',
@@ -30,7 +30,7 @@ export const createSubCategory = asyncHandler(async (req, res, next) => {
  
  const {categoryId} = req.params;
  const {name}=req.body;
-console.log( req.params,name)
+// console.log( req.params,name)
  if(await subcategoryModel.findOne({name})){
   return next(new Error(`duplicate sub category name ${name}`));
  }
