@@ -31,7 +31,7 @@ const initapp = (app, express, next) => {
   connectDB();
   // app.use(cors(corsOptions)); // to allow front-end to use project and fetch data
   app.use(express.json());
-  app.use("/database", (req,res)=>{
+  app.use("/", (req,res)=>{
     return res.json({message:'welcome'})
   });
 
