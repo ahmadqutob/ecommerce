@@ -223,6 +223,8 @@ export const getAllProduct =asyncHandler(async (req, res,next) => {
 
 
 export const allProductWithReviews =asyncHandler(async (req, res,next) => {
+return res.json({message:'allProductWithReviews'})
+
     const product = await productModel.find().populate('reviews')
     return res.json({message: product})
   });
