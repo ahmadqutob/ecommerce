@@ -20,7 +20,7 @@ export const generalFeild=  {
  
         email:joi.string().email({minDomainSegments:2,tlds:{allow:['com','net']}}).required(),
         password:joi.string().required(),
-        Cpassword:joi.string().valid(joi.ref("newPassword")).required(), 
+        Cpassword:joi.string().valid(joi.ref("password")).required(), 
 
 
         file:joi.object({

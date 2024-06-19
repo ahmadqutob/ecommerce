@@ -3,7 +3,7 @@
  const connectDB =async()=>{
 
     //  return await mongoose.connect(process.env.CONNECTDB)
-      return await mongoose.connect(process.env.CONNECT_CAMPOSS1)
+      return await mongoose.connect(process.env.CONNECTDB)
     .then( result =>{
       console.log('connection successfuly !!')
     }
