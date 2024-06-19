@@ -6,6 +6,9 @@ import subcategoryModel from "../../../../DB/model/subCategory.model.js";
 import brandModel from "../../../../DB/model/brand.model.js";
  
 
+
+ 
+
 export const getProduct=asyncHandler( async(req,res,next) => {
     const {productId}=  req.params;
     const product = await productModel.find({productId});
@@ -213,7 +216,7 @@ export const cart= asyncHandler(async (req,res,next) => {
 
 export const getAllProduct =asyncHandler(async (req, res,next) => {
   const product = await productModel.find().populate('reviews')
-  return res.json({message:'s',product})
+  return res.json({message: product})
 });
 
 
@@ -221,7 +224,7 @@ export const getAllProduct =asyncHandler(async (req, res,next) => {
 
 export const allProductWithReviews =asyncHandler(async (req, res,next) => {
     const product = await productModel.find().populate('reviews')
-    return res.json({message:'s',product})
+    return res.json({message: product})
   });
  
 
